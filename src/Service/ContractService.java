@@ -12,6 +12,13 @@ import java.util.Date;
 import java.util.List;
 
 public class ContractService extends PayPalService {
+
+    private OnlinePaymentService onlinePaymentService;
+
+    public ContractService(OnlinePaymentService onlinePaymentService) {
+        this.onlinePaymentService = onlinePaymentService;
+    }
+
     public void processContract(Contract contrato, Integer months) throws ParseException {
         Calendar cal = Calendar.getInstance();
         for (int i = 0; i < months; i++) {
@@ -19,8 +26,8 @@ public class ContractService extends PayPalService {
             cal.add(Calendar.MONTH, 1);
             contrato.setDate(cal.getTime());
             Double temp = contrato.getTotalValue();
-            contrato.setTotalValue(interest(contrato.getTotalValue()/months, (i+1)));
-            contrato.setTotalValue(paymentFee(contrato.getTotalValue()));
+            contrato.setTotalValue(onlinePaymentService.interest(contrato.getTotalValue()/months,(i+1)));
+            contrato.setTotalValue(onlinePaymentService.paymentFee(contrato.getTotalValue()));
             contrato.getInstallment().add(new Installment(contrato.getDate(), contrato.getTotalValue()));
             contrato.setTotalValue(temp);
         }
