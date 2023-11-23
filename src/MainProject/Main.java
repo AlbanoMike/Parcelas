@@ -3,6 +3,8 @@ package MainProject;
 import Entities.Contract;
 import Entities.Installment;
 import Service.ContractService;
+import Service.OnlinePaymentService;
+import Service.PayPalService;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -29,7 +31,7 @@ public class Main {
             throw new RuntimeException(e);
         }
         Contract mike = new Contract(numero, data, valor,new ArrayList<Installment>());
-        ContractService service =new ContractService();
+        ContractService service = new ContractService(new PayPalService());
         service.processContract(mike,parcelas);
         System.out.println(mike.toString());
 
